@@ -1,0 +1,11 @@
+# Maven
+target/
+
+# JetBrains
+.idea/
+
+# Properties (can include sensitive data)
+application.properties
+
+# Others
+*.log

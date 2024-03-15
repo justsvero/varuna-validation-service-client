@@ -1,4 +1,6 @@
-# Hello World
+# DATA Varuna Validation Service Client
 
-This is a very simple, Maven-based project. The purpose is mainly to serve
-as playground for testing different things. It has no real usage.
+DATA Varuna is a product from the Governikus GmbH & Co. KG Bremen. It includes
+a webservice with a REST API that can be used to validate the signatures of
+documents. This sample project demonstrates how to use KeyCloak to get the
+required token to access the Validation Service.

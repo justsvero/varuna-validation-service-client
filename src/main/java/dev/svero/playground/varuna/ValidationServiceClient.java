@@ -1,7 +1,7 @@
-package dev.svero.playground.helloworld;
+package dev.svero.playground.varuna;
 
-import dev.svero.playground.helloworld.models.ValidationServiceConfiguration;
-import dev.svero.playground.helloworld.utils.HttpUtils;
+import dev.svero.playground.varuna.models.ValidationServiceConfiguration;
+import dev.svero.playground.varuna.utils.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;

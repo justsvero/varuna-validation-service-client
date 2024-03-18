@@ -1,6 +1,6 @@
-package dev.svero.playground.helloworld;
+package dev.svero.playground.varuna;
 
-import dev.svero.playground.helloworld.utils.HttpUtils;
+import dev.svero.playground.varuna.utils.HttpUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

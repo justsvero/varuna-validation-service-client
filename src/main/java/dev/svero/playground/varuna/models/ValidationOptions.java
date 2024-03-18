@@ -1,4 +1,4 @@
-package dev.svero.playground.helloworld.models;
+package dev.svero.playground.varuna.models;
 
 import java.util.Date;
 

@@ -1,6 +1,5 @@
-package dev.svero.playground.helloworld;
+package dev.svero.playground.varuna;
 
-import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -19,7 +18,7 @@ public class JWTUtils {
                               final PrivateKey privateKey) {
         Date now = new Date();
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setIssuedAt(now)
                 .setId(UUID.randomUUID().toString())
                 .setIssuer(issuer)
@@ -27,7 +26,5 @@ public class JWTUtils {
                 .setSubject(subject)
                 .signWith(privateKey, SignatureAlgorithm.RS256)
                 .compact();
-
-        return token;
     }
 }

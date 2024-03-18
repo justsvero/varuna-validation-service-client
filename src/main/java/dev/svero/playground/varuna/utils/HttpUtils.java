@@ -1,4 +1,4 @@
-package dev.svero.playground.helloworld.utils;
+package dev.svero.playground.varuna.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;

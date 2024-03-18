@@ -1,4 +1,4 @@
-package dev.svero.playground.helloworld.exceptions;
+package dev.svero.playground.varuna.exceptions;
 
 /**
  * This exception is thrown if an error occurrs while

@@ -1,6 +1,6 @@
-package dev.svero.playground.helloworld.utils;
+package dev.svero.playground.varuna.utils;
 
-import dev.svero.playground.helloworld.exceptions.SSLUtilsException;
+import dev.svero.playground.varuna.exceptions.SSLUtilsException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

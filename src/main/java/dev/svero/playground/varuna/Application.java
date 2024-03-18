@@ -2,14 +2,11 @@ package dev.svero.playground.varuna;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.svero.playground.varuna.models.ReportConfiguration;
 import dev.svero.playground.varuna.models.ValidationServiceConfiguration;
 import dev.svero.playground.varuna.utils.HttpUtils;
 import dev.svero.playground.varuna.utils.KeyStoreUtils;
 import dev.svero.playground.varuna.utils.SSLUtils;
-
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +20,7 @@ import java.security.PrivateKey;
  * @author Sven Roeseler
  */
 public class Application {
-	private static final Logger LOGGER = LoggerFactory.getLogger(HelloWorldApplication.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 	private static final String PROPERTY_CONFIGURATION = "configuration";
 	private static final String ENVIRONMENT_CONFIGURATION = "VERUNA_CLIENT_CONFIG_FILE";
 

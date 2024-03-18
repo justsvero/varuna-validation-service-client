@@ -1,4 +1,4 @@
-package dev.svero.playground.helloworld.exceptions;
+package dev.svero.playground.varuna.exceptions;
 
 public class KeyStoreUtilsException extends RuntimeException{
     public KeyStoreUtilsException() {

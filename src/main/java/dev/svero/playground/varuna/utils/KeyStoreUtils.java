@@ -1,6 +1,6 @@
-package dev.svero.playground.helloworld.utils;
+package dev.svero.playground.varuna.utils;
 
-import dev.svero.playground.helloworld.exceptions.KeyStoreUtilsException;
+import dev.svero.playground.varuna.exceptions.KeyStoreUtilsException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;

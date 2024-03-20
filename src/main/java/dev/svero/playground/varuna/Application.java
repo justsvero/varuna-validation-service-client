@@ -193,9 +193,14 @@ public class Application {
 	private static Options buildCliOptions() {
 		Options options = new Options();
 
-		options.addOption("c", "configuration", true, "Name and path with the application properties");
-		options.addOption("f", "file", true, "Path and name of the signed document");
-		options.addOption("s", "signature", true, "Path and name of the signature file");
+		options.addOption("c", "configuration", true,
+				"Name and path with the application properties");
+		options.addOption("f", "file", true,
+				"Path and name of the signed document");
+		options.addOption("o", "output", true,
+				"Path and name for the generated validation report");
+		options.addOption("s", "signature", true,
+				"Path and name of the signature file");
 
 		return options;
 	}

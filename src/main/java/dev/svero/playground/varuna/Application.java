@@ -6,6 +6,7 @@ import dev.svero.playground.varuna.models.ValidationServiceConfiguration;
 import dev.svero.playground.varuna.utils.HttpUtils;
 import dev.svero.playground.varuna.utils.KeyStoreUtils;
 import dev.svero.playground.varuna.utils.SSLUtils;
+import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +32,13 @@ public class Application {
 	/**
 	 * Entry point for running the application.
 	 *
-	 * You can specify a filename as optional command-line argument. If it is present the configuration
-	 * is read from it.
-	 *
 	 * @param args String array with command-line arguments.
 	 */
-	public static void main(String... args) {
+	public static void main(String[] args) {
 		try {
-			String filename = getConfigurationFilename(args);
+			final CommandLine commandLine = parseCommandLine(args);
+
+			String filename = getConfigurationFilename(commandLine);
 			LOGGER.debug("Reading settings from \"{}\"", filename);
 
 			Configuration configuration = new Configuration();
@@ -106,14 +106,15 @@ public class Application {
 	/**
 	 * Returns the name of the file that contains the configuration.
 	 * 
-	 * @param args String array with command-line arguments
-	 * @return Filename
+	 * @param commandLine CommandLine instance
+	 * @return Path and name of the properties file
 	 */
-	private static String getConfigurationFilename(String... args) {
+	private static String getConfigurationFilename(CommandLine commandLine) {
 		String filename;
-		if (args.length > 0 && StringUtils.isNotBlank(args[0])) {
+
+		if (commandLine.hasOption('c')) {
 			LOGGER.debug("Using specified filename");
-			filename = args[0].trim();
+			filename = commandLine.getOptionValue('c');
 		} else if (System.getProperties().containsKey(PROPERTY_CONFIGURATION)) {
 			LOGGER.debug("Using information from system property");
 			filename = System.getProperty(PROPERTY_CONFIGURATION);
@@ -126,5 +127,42 @@ public class Application {
 		}
 
 		return filename;
+	}
+
+	/**
+	 * Builds the available command-line options.
+	 *
+	 * @return Options instance
+	 */
+	private static Options buildCliOptions() {
+		Options options = new Options();
+
+		options.addOption("c", "configuration", true, "Name and path with the application properties");
+		options.addOption("f", "file", true, "Path and name of the signed document");
+		options.addOption("s", "signature", true, "Path and name of the signature file");
+
+		return options;
+	}
+
+	/**
+	 * Parses the command-line and returns an object with all specified parameters.
+	 *
+	 * @param args String array with command-line arguments
+	 * @return Object with parsed parameters
+	 */
+	private static CommandLine parseCommandLine(String[] args) {
+		final Options options = buildCliOptions();
+		final CommandLineParser parser = new DefaultParser();
+
+		CommandLine commandLine;
+
+		try {
+			commandLine = parser.parse(options, args);
+		} catch (ParseException ex) {
+			LOGGER.error("Could not parse the command-line arguments", ex);
+			throw new RuntimeException("An error occurred while parsing the command line", ex);
+		}
+
+		return commandLine;
 	}
 }

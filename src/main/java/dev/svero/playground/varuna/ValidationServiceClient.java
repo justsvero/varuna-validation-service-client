@@ -55,7 +55,7 @@ public class ValidationServiceClient {
      * @param document Optional file with the signed document
      */
     public byte[] validate(final String authorizationToken, final ValidationServiceConfiguration configuration,
-                         Path signature, Path document) {
+                         Path signature, Path document) throws IOException, InterruptedException {
         if (signature == null) {
             throw new IllegalArgumentException("signature may not be null");
         }
@@ -82,16 +82,6 @@ public class ValidationServiceClient {
 
         final String url = this.baseUrl + this.endPoint;
 
-        byte[] response = null;
-
-        try {
-            response = httpClient.postMultipartRequest(url, data, additionalHeaders);
-            LOGGER.debug("Received {} bytes as response", response.length);
-        } catch (Exception e) {
-            LOGGER.error("Could not successfully perform the request to the validation service", e);
-            throw new RuntimeException("Could not validate the signature due to an unexpected exception", e);
-        }
-
-        return response;
+        return httpClient.postMultipartRequest(url, data, additionalHeaders);
     }
 }

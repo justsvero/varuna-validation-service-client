@@ -62,6 +62,9 @@ public class Application {
 			final String privateKeyAlias = configuration.getString("keystore.private_key.alias", true);
 			final String privateKeyPassword = configuration.getString("keystore.private_key.password", true);
 			final PrivateKey privateKey = KEY_STORE_UTILS.getKey(keyStore, privateKeyAlias, privateKeyPassword);
+			if (privateKey == null) {
+				throw new IllegalStateException("No private key found in specified keystore");
+			}
 
 			String keyCloakBaseUrl = configuration.getString("keycloak.baseUrl", true);
 			if (keyCloakBaseUrl.endsWith("/")) {

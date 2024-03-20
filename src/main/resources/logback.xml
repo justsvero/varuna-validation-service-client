@@ -10,7 +10,7 @@
         </encoder>
     </appender>
 
-    <logger name="dev.svero.playground.helloworld" level="DEBUG" />
+    <logger name="dev.svero" level="DEBUG" />
 
     <root level="WARN">
         <appender-ref ref="STDOUT"/>

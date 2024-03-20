@@ -3,9 +3,11 @@ target/
 
 # JetBrains
 .idea/
+*.iml
 
 # Properties (can include sensitive data)
 application.properties
 
 # Others
 *.log
+certs/

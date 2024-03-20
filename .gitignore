@@ -11,3 +11,4 @@ application.properties
 # Others
 *.log
 certs/
+*.zip

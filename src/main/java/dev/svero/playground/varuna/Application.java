@@ -16,6 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.PrivateKey;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Implements the entry point for the application.
@@ -104,28 +107,53 @@ public class Application {
 			}
 
 			final String signatureFileName = commandLine.getOptionValue('s');
-			if (!Files.exists(Path.of(signatureFileName))) {
+			LOGGER.debug("Signature file: {}", signatureFileName);
+
+			Path signatureFile = Path.of(signatureFileName);
+
+			if (!Files.exists(signatureFile)) {
 				LOGGER.error("Could not find the signature file {}", signatureFileName);
 				return;
 			}
 
-			LOGGER.debug("Signature file: {}", signatureFileName);
-			File signatureFile = new File(signatureFileName);
-
-			File documentFile = null;
+			Path documentFile = null;
 
 			if (commandLine.hasOption('f')) {
 				final String documentFilename = commandLine.getOptionValue('f');
-				if (!Files.exists(Path.of(documentFilename))) {
+
+				documentFile = Path.of(documentFilename);
+
+				if (!Files.exists(documentFile)) {
 					LOGGER.error("The specified document file does not exist: {}", documentFilename);
+					return;
 				}
 
 				LOGGER.debug("Document file: {}", documentFilename);
-
-				documentFile = new File(documentFilename);
 			}
 
-			validationServiceClient.validate(accessToken, serviceConfiguration, signatureFile, documentFile);
+			byte[] validationReportData = validationServiceClient.validate(accessToken, serviceConfiguration,
+					signatureFile, documentFile);
+
+			if (validationReportData == null || validationReportData.length == 0) {
+				LOGGER.info("No validation report received");
+				return;
+			}
+
+			String outputFilename = null;
+
+			if (commandLine.hasOption('o')) {
+				outputFilename = commandLine.getOptionValue('o');
+			} else {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+
+				LocalDateTime now = LocalDateTime.now();
+
+				outputFilename = "ValidationReport_" + formatter.format(now) + ".zip";
+			}
+
+			LOGGER.debug("Output: {}", outputFilename);
+			Files.write(Path.of(outputFilename), validationReportData);
+
 		} catch (Exception ex) {
 			LOGGER.error("An error occurred", ex);
 		}

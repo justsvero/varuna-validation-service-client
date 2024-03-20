@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,8 +54,12 @@ public class ValidationServiceClient {
      * @param signature File with signature to check
      * @param document Optional file with the signed document
      */
-    public void validate(final String authorizationToken, final ValidationServiceConfiguration configuration,
-                         File signature, File document) {
+    public byte[] validate(final String authorizationToken, final ValidationServiceConfiguration configuration,
+                         Path signature, Path document) {
+        if (signature == null) {
+            throw new IllegalArgumentException("signature may not be null");
+        }
+
         Map<Object, Object> data = new HashMap<>();
 
         data.put("signature", signature);
@@ -77,10 +82,16 @@ public class ValidationServiceClient {
 
         final String url = this.baseUrl + this.endPoint;
 
+        byte[] response = null;
+
         try {
-            String response = httpClient.postMultipartRequest(url, data, additionalHeaders);
+            response = httpClient.postMultipartRequest(url, data, additionalHeaders);
+            LOGGER.debug("Received {} bytes as response", response.length);
         } catch (Exception e) {
             LOGGER.error("Could not successfully perform the request to the validation service", e);
+            throw new RuntimeException("Could not validate the signature due to an unexpected exception", e);
         }
+
+        return response;
     }
 }

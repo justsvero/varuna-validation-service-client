@@ -11,7 +11,6 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -60,7 +59,7 @@ public class HttpUtils {
 
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
 
-        return processRequest(request);
+        return processRequestWithTextResponse(request);
     }
 
     /**
@@ -84,7 +83,7 @@ public class HttpUtils {
                         : HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        return processRequest(request);
+        return processRequestWithTextResponse(request);
     }
 
     /**
@@ -95,7 +94,7 @@ public class HttpUtils {
      * @return Response from the server
      * @throws IOException If something went wrong
      */
-    public String postMultipartRequest(final String url, Map<Object, Object> requestData)
+    public byte[] postMultipartRequest(final String url, Map<Object, Object> requestData)
             throws IOException, InterruptedException {
         return postMultipartRequest(url, requestData, null);
     }
@@ -109,7 +108,7 @@ public class HttpUtils {
      * @return Response from the server
      * @throws IOException If something went wrong
      */
-    public String postMultipartRequest(final String url, Map<Object, Object> requestData, Map<String, String> headers)
+    public byte[] postMultipartRequest(final String url, Map<Object, Object> requestData, Map<String, String> headers)
             throws IOException, InterruptedException {
         if (StringUtils.isBlank(url)) {
             throw new IllegalArgumentException("url may not be blank");
@@ -137,7 +136,7 @@ public class HttpUtils {
 
         HttpRequest request = builder.build();
 
-        return processRequest(request);
+        return processRequestWithBinaryResponse(request);
     }
 
     /**
@@ -165,7 +164,7 @@ public class HttpUtils {
      * @throws IOException          If an I/O error happened
      * @throws InterruptedException If the request was interrupted before the response was received
      */
-    public String processRequest(HttpRequest request) throws IOException, InterruptedException {
+    public String processRequestWithTextResponse(HttpRequest request) throws IOException, InterruptedException {
         if (request == null) {
             throw new IllegalArgumentException("request may not be null");
         }
@@ -190,6 +189,25 @@ public class HttpUtils {
         }
 
         return result;
+    }
+
+    public byte[] processRequestWithBinaryResponse(HttpRequest request) throws IOException, InterruptedException {
+        if (request == null) {
+            throw new IllegalArgumentException("request may not be null");
+        }
+
+        HttpClient client = createHttpClient();
+
+        HttpResponse<byte[]> response = client.send(request, responseInfo -> HttpResponse.BodySubscribers.ofByteArray());
+
+        int statusCode = response.statusCode();
+
+        if (statusCode != 200) {
+            LOGGER.error("Unexpected status code: {}", statusCode);
+            throw new IllegalStateException("The server returned an unexpected status code of " + statusCode);
+        }
+
+        return response.body();
     }
 
     /**
@@ -223,8 +241,7 @@ public class HttpUtils {
             byteArrays.add(separator);
 
             // If value is type of Path (file) append content type with file name and file binaries, otherwise simply append key=value
-            if (entry.getValue() instanceof Path) {
-                var path = (Path) entry.getValue();
+            if (entry.getValue() instanceof Path path) {
                 String mimeType = Files.probeContentType(path);
                 byteArrays.add(("\"" + entry.getKey() + "\"; filename=\"" + path.getFileName()
                         + "\"\r\nContent-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));

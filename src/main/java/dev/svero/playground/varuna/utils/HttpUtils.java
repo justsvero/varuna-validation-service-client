@@ -191,6 +191,14 @@ public class HttpUtils {
         return result;
     }
 
+    /**
+     * Performs a HTTP request which expects a binary response (e.g. a file).
+     *
+     * @param request Http request to perform
+     * @return Byte array with response if successful
+     * @throws IOException If an I/O error happens
+     * @throws InterruptedException If the request is interrupted
+     */
     public byte[] processRequestWithBinaryResponse(HttpRequest request) throws IOException, InterruptedException {
         if (request == null) {
             throw new IllegalArgumentException("request may not be null");

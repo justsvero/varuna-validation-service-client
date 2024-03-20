@@ -7,11 +7,13 @@ import dev.svero.playground.varuna.utils.HttpUtils;
 import dev.svero.playground.varuna.utils.KeyStoreUtils;
 import dev.svero.playground.varuna.utils.SSLUtils;
 import org.apache.commons.cli.*;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 
@@ -96,8 +98,34 @@ public class Application {
 			serviceConfiguration.setProfile("AUTOMATIC");
 			serviceConfiguration.setMaxRecursionDepth(3);
 
-			Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-			LOGGER.debug("Service configuration: {}", gsonBuilder.toJson(serviceConfiguration));
+			if (!commandLine.hasOption('s')) {
+				LOGGER.error("You need to specify at least the signature file");
+				return;
+			}
+
+			final String signatureFileName = commandLine.getOptionValue('s');
+			if (!Files.exists(Path.of(signatureFileName))) {
+				LOGGER.error("Could not find the signature file {}", signatureFileName);
+				return;
+			}
+
+			LOGGER.debug("Signature file: {}", signatureFileName);
+			File signatureFile = new File(signatureFileName);
+
+			File documentFile = null;
+
+			if (commandLine.hasOption('f')) {
+				final String documentFilename = commandLine.getOptionValue('f');
+				if (!Files.exists(Path.of(documentFilename))) {
+					LOGGER.error("The specified document file does not exist: {}", documentFilename);
+				}
+
+				LOGGER.debug("Document file: {}", documentFilename);
+
+				documentFile = new File(documentFilename);
+			}
+
+			validationServiceClient.validate(accessToken, serviceConfiguration, signatureFile, documentFile);
 		} catch (Exception ex) {
 			LOGGER.error("An error occurred", ex);
 		}

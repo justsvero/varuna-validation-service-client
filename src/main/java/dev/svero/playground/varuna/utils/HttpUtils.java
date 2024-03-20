@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
@@ -178,7 +179,9 @@ public class HttpUtils {
         if (response.statusCode() == 200) {
             result = response.body();
         } else {
-            LOGGER.error("HTTP request returned unexpected status: {}", response.statusCode());
+            LOGGER.error("Unexpected response received:\n* Status Code: {}\n* Headers: {}\n* Body: {}",
+                    response.statusCode(), response.headers().toString(), response.body());
+
             throw new RuntimeException("Unexpected status code received while processing POST request");
         }
 

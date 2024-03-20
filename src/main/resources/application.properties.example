@@ -9,10 +9,10 @@ truststore.filename=
 truststore.password=
 truststore.type=pkcs12
 
-keycloak.baseUrl=
+keycloak.baseUrl=https://$hostname:$port
 keycloak.realm=governikus-extern
 keycloak.issuer=validation-service
 keycloak.subject=validation-service
 
-validationService.baseUrl=
+validationService.baseUrl= https://$hostname:$port/validation-service-war/rest
 validationService.endPoint=/v1/validate

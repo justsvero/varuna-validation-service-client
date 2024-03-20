@@ -1,5 +1,7 @@
 package dev.svero.playground.varuna;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dev.svero.playground.varuna.models.ValidationServiceConfiguration;
 import dev.svero.playground.varuna.utils.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,7 +64,12 @@ public class ValidationServiceClient {
         }
 
         if (configuration != null) {
-            data.put("jsonConfig", new JSONObject(configuration));
+            Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+
+            final String json = gsonBuilder.toJson(configuration);
+            LOGGER.debug("Service configuration: {}", json);
+
+            data.put("jsonConfig", json);
         }
 
         Map<String, String> additionalHeaders = new HashMap<>();
@@ -72,7 +79,7 @@ public class ValidationServiceClient {
 
         try {
             String response = httpClient.postMultipartRequest(url, data, additionalHeaders);
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             LOGGER.error("Could not successfully perform the request to the validation service", e);
         }
     }

@@ -2,14 +2,13 @@ package dev.svero.playground.varuna;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import dev.svero.playground.varuna.models.ValidationServiceConfiguration;
 import dev.svero.playground.varuna.utils.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -70,11 +69,11 @@ public class ValidationServiceClient {
 
         if (configuration != null) {
             Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
+            JsonObject jsonObject = gsonBuilder.toJsonTree(configuration).getAsJsonObject();
 
-            final String json = gsonBuilder.toJson(configuration);
-            LOGGER.debug("Service configuration: {}", json);
+            LOGGER.debug("Configuration: {}", jsonObject.getAsString());
 
-            data.put("jsonConfig", json);
+            data.put("jsonConfig", jsonObject);
         }
 
         Map<String, String> additionalHeaders = new HashMap<>();

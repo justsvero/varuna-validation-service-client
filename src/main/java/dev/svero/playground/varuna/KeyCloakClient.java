@@ -1,7 +1,8 @@
 package dev.svero.playground.varuna;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import dev.svero.playground.varuna.utils.HttpUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +62,9 @@ public class KeyCloakClient {
             throw new RuntimeException("An error occurred while processing the request to KeyCloak", e);
         }
 
-        JSONObject jsonObject = new JSONObject(result);
+        JsonObject jsonObject = JsonParser.parseString(result).getAsJsonObject();
         if (jsonObject.has(ACCESS_TOKEN_KEY)) {
-            accessToken = jsonObject.getString(ACCESS_TOKEN_KEY);
+            accessToken = jsonObject.get(ACCESS_TOKEN_KEY).getAsString();
         } else {
             LOGGER.error("No access token found in received data!");
         }

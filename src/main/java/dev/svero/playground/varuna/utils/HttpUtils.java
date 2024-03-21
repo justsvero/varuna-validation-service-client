@@ -1,7 +1,7 @@
 package dev.svero.playground.varuna.utils;
 
+import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +16,17 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * Implements methods for performing HTTP requests.
  *
  * @author Sven Roeseler
  */
+@SuppressWarnings("unused")
 public class HttpUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
@@ -32,7 +36,7 @@ public class HttpUtils {
      * Creates a new instance.
      */
     public HttpUtils() {
-        this.sslContext = null;
+        this(null);
     }
 
     /**
@@ -255,10 +259,12 @@ public class HttpUtils {
                         + "\"\r\nContent-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));
                 byteArrays.add(Files.readAllBytes(path));
                 byteArrays.add("\r\n".getBytes(StandardCharsets.UTF_8));
-            } else if (entry.getValue() instanceof JSONObject) {
+            } else if (entry.getValue() instanceof JsonObject jsonObject) {
                 String mimeType = "application/json";
+                String json = jsonObject.getAsString();
+
                 byteArrays.add(("\"" + entry.getKey() + "\"" + "\r\nContent-Type:" + mimeType + "\r\n\r\n"
-                        + entry.getValue() + "\r\n")
+                        + json + "\r\n")
                         .getBytes(StandardCharsets.UTF_8));
             } else {
                 byteArrays.add(("\"" + entry.getKey() + "\"\r\n\r\n" + entry.getValue() + "\r\n")

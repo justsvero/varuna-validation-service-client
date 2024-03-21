@@ -1,12 +1,17 @@
 package dev.svero.playground.varuna;
 
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.security.PrivateKey;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Implements methods for handling JSON Web Token.
+ *
+ * @author Sven Roseler
+ */
 public class JWTUtils {
     /**
      * Generates a JSON Web Token.
@@ -18,13 +23,16 @@ public class JWTUtils {
                               final PrivateKey privateKey) {
         Date now = new Date();
 
-        return Jwts.builder()
-                .setIssuedAt(now)
-                .setId(UUID.randomUUID().toString())
-                .setIssuer(issuer)
-                .setAudience(audience)
-                .setSubject(subject)
-                .signWith(privateKey, SignatureAlgorithm.RS256)
-                .compact();
+        JwtBuilder builder = Jwts.builder()
+                .issuedAt(now)
+                .id(UUID.randomUUID().toString())
+                .issuer(issuer)
+                .subject(subject)
+                .signWith(privateKey)
+                ;
+
+        builder.audience().add(audience);
+
+        return builder.compact();
     }
 }

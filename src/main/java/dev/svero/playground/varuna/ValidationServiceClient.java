@@ -71,7 +71,7 @@ public class ValidationServiceClient {
             Gson gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
             JsonObject jsonObject = gsonBuilder.toJsonTree(configuration).getAsJsonObject();
 
-            LOGGER.debug("Configuration: {}", jsonObject.getAsString());
+            LOGGER.debug("Configuration: {}", jsonObject.toString());
 
             data.put("jsonConfig", jsonObject);
         }

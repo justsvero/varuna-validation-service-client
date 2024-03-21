@@ -1,7 +1,5 @@
 package dev.svero.playground.varuna;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import dev.svero.playground.varuna.models.ValidationServiceConfiguration;
 import dev.svero.playground.varuna.utils.HttpUtils;
 import dev.svero.playground.varuna.utils.KeyStoreUtils;
@@ -11,14 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 /**
  * Implements the entry point for the application.
@@ -139,7 +135,7 @@ public class Application {
 				return;
 			}
 
-			String outputFilename = null;
+			String outputFilename;
 
 			if (commandLine.hasOption('o')) {
 				outputFilename = commandLine.getOptionValue('o');

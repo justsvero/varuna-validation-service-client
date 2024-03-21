@@ -35,7 +35,7 @@ public class KeyStoreUtils {
             return loadKeyStore(keyStoreFilename, keyStorePassword);
         }
 
-        KeyStore keyStore = null;
+        KeyStore keyStore;
 
         try {
             keyStore = KeyStore.getInstance(keyStoreType);

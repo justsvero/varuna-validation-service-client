@@ -265,7 +265,7 @@ public class HttpUtils {
                 byteArrays.add("\r\n".getBytes(CHARSET));
             } else if (entry.getValue() instanceof JsonObject jsonObject) {
                 String mimeType = "application/json";
-                String json = jsonObject.getAsString();
+                String json = jsonObject.toString();
 
                 byteArrays.add(("\"" + entry.getKey() + "\"" + "\r\nContent-Type:" + mimeType + "\r\n\r\n"
                         + json + "\r\n")

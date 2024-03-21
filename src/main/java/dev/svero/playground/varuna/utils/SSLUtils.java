@@ -36,7 +36,7 @@ public class SSLUtils {
             throw new IllegalArgumentException("trustStore should not be null");
         }
 
-        SSLContext context = null;
+        SSLContext context;
 
         try {
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());

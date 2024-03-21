@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,6 +30,8 @@ import java.util.Random;
 @SuppressWarnings("unused")
 public class HttpUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
+
+    private static final Charset CHARSET = StandardCharsets.UTF_8;
 
     private final SSLContext sslContext;
 
@@ -244,7 +247,7 @@ public class HttpUtils {
         List<byte[]> byteArrays = new ArrayList<>();
 
         // Separator with boundary
-        byte[] separator = ("--" + boundary + "\r\nContent-Disposition: form-data; name=").getBytes(StandardCharsets.UTF_8);
+        byte[] separator = ("--" + boundary + "\r\nContent-Disposition: form-data; name=").getBytes(CHARSET);
 
         // Iterating over data parts
         for (Map.Entry<Object, Object> entry : data.entrySet()) {
@@ -255,25 +258,26 @@ public class HttpUtils {
             // If value is type of Path (file) append content type with file name and file binaries, otherwise simply append key=value
             if (entry.getValue() instanceof Path path) {
                 String mimeType = Files.probeContentType(path);
+
                 byteArrays.add(("\"" + entry.getKey() + "\"; filename=\"" + path.getFileName()
-                        + "\"\r\nContent-Type: " + mimeType + "\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+                        + "\"\r\nContent-Type: " + mimeType + "\r\n\r\n").getBytes(CHARSET));
                 byteArrays.add(Files.readAllBytes(path));
-                byteArrays.add("\r\n".getBytes(StandardCharsets.UTF_8));
+                byteArrays.add("\r\n".getBytes(CHARSET));
             } else if (entry.getValue() instanceof JsonObject jsonObject) {
                 String mimeType = "application/json";
                 String json = jsonObject.getAsString();
 
                 byteArrays.add(("\"" + entry.getKey() + "\"" + "\r\nContent-Type:" + mimeType + "\r\n\r\n"
                         + json + "\r\n")
-                        .getBytes(StandardCharsets.UTF_8));
+                        .getBytes(CHARSET));
             } else {
                 byteArrays.add(("\"" + entry.getKey() + "\"\r\n\r\n" + entry.getValue() + "\r\n")
-                        .getBytes(StandardCharsets.UTF_8));
+                        .getBytes(CHARSET));
             }
         }
 
         // Closing boundary
-        byteArrays.add(("--" + boundary + "--").getBytes(StandardCharsets.UTF_8));
+        byteArrays.add(("--" + boundary + "--").getBytes(CHARSET));
 
         // Serializing as byte array
         return HttpRequest.BodyPublishers.ofByteArrays(byteArrays);

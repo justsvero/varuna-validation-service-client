@@ -9,6 +9,7 @@ target/
 application.properties
 
 # Others
-*.log
 certs/
+demo-data/
+*.log
 *.zip

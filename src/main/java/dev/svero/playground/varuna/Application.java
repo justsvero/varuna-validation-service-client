@@ -78,14 +78,18 @@ public class Application {
 			final String subject = configuration.getString("keycloak.subject", true);
 			final String jwt = JWT_UTILS.generateJwt(issuer, audience, subject, privateKey);
 
+			final String validationServiceBaseUrl = configuration.getString("validationService.baseUrl", true);
+			final String validationServiceEndPoint = configuration.getString("validationService.endPoint", true);
+
 			HttpUtils httpUtils = new HttpUtils(sslContext);
+
+			// ************************* Access KeyCloak *****************************************************
 
 			KeyCloakClient keyCloakClient = new KeyCloakClient(httpUtils, keyCloakBaseUrl, keyCloakRealm);
 			String accessToken = keyCloakClient.getAccessToken(jwt);
 			LOGGER.debug("Token: {}", accessToken);
 
-			final String validationServiceBaseUrl = configuration.getString("validationService.baseUrl", true);
-			final String validationServiceEndPoint = configuration.getString("validationService.endPoint", true);
+			// ************************* Access Validation Service *******************************************
 
 			ValidationServiceClient validationServiceClient = new ValidationServiceClient(httpUtils,
 					validationServiceBaseUrl, validationServiceEndPoint);
